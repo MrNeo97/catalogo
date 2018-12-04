@@ -23,12 +23,15 @@
                     <h1>Login</h1>
                     <label for="email"></label>
                     <input type="text" class="form-control" name="user" placeholder="Introduce tu usuario">
+                    <p class="text-danger"><?= isset($errorUser) ? $errorUser : '' ?></p>
                 </div>
                 <div class="form-group">
 
                     <label for="clave"></label>
 
                     <input type="password" class="form-control" name="clave" placeholder="Contraseña">
+                    <p class="text-danger"><?= isset($errorPass) ? $errorPass : '' ?></p>
+
                 </div>
 
                 <button class="btn btn-primary" type="submit">Enviar</button>

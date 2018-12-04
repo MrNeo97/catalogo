@@ -26,59 +26,66 @@ class ProductosController extends Controller
 
     public function listar()
     {
-        $productos = new Producto();
-        $productos = $productos->getAll();
+        if (Session::userIsLoggedIn()) {
+            $productos = new Producto();
+            $productos = $productos->getAll();
 
-        echo $this->view->render('productos/listar',[
-            'productos' => $productos,
-            'titulo' => $this->titulo
-        ]);
+            echo $this->view->render('productos/listar', [
+                'productos' => $productos,
+                'titulo' => $this->titulo
+            ]);
+        }  else {
+            header('Location: /login');
+        }
     }
 
     public function crear()
     {
+        if (Session::userIsLoggedIn()) {
+            if (!$_POST) {
 
-        if ( ! $_POST ) {
+                $this->view->addData(['titulo' => 'Crear Producto']);
+                echo $this->view->render('productos/formularioProducto');
 
-            $this->view->addData(['titulo' => 'Crear Producto']);
-            echo $this->view->render('productos/formularioProducto');
-
-        } else {
-
-            $fecha = date('Y-m-d');
-
-            $datos = array ("nombre" => filter_var(trim(strtolower($_POST['nombre'])), FILTER_SANITIZE_STRING),
-                "descripcion" => filter_var(trim(strtolower($_POST['descripcion'])), FILTER_SANITIZE_STRING),
-                "fecha_alta" => $fecha,
-                "marca" => filter_var(trim(strtolower($_POST['marca'])), FILTER_SANITIZE_STRING),
-                "usuario_id" => 1,
-                "categoria_id" => 1
-            );
-
-           $feedback = '';
-           $errors = '';
-
-            if ( Producto::insert($datos) ) {
-                if (! is_null(Session::get('feedback_positive')) && count(Session::get('feedback_positive'))>0) {
-                    $feedback = 'positive';
-                    $errores = Session::get('feedback_positive');
-                    var_dump($errores);
-                }
-                echo $this->view->render('login/usuarioregistrado');
             } else {
-                if (! is_null(Session::get('feedback_negative')) && count(Session::get('feedback_negative'))>0) {
-                    $feedback = 'negative';
-                    $errores = Session::get('feedback_negative');
+
+                $fecha = date('Y-m-d');
+
+                $datos = array("nombre" => filter_var(trim(strtolower($_POST['nombre'])), FILTER_SANITIZE_STRING),
+                    "descripcion" => filter_var(trim(strtolower($_POST['descripcion'])), FILTER_SANITIZE_STRING),
+                    "fecha_alta" => $fecha,
+                    "marca" => filter_var(trim(strtolower($_POST['marca'])), FILTER_SANITIZE_STRING),
+                    "usuario_id" => 1,
+                    "categoria_id" => 1
+                );
+
+                $feedback = '';
+                $errors = '';
+
+                if (Producto::insert($datos)) {
+                    if (!is_null(Session::get('feedback_positive')) && count(Session::get('feedback_positive')) > 0) {
+                        $feedback = 'positive';
+                        $errores = Session::get('feedback_positive');
+                        var_dump($errores);
+                    }
+                    echo $this->view->render('login/usuarioregistrado');
+                } else {
+                    if (!is_null(Session::get('feedback_negative')) && count(Session::get('feedback_negative')) > 0) {
+                        $feedback = 'negative';
+                        $errores = Session::get('feedback_negative');
+                    }
+                    echo $this->view->render('login/registro', [
+                        'errores' => $errores,
+                        'datos' => $_POST,
+                        'feedback' => $feedback,
+                        'errors' => $errors
+                    ]);
                 }
-                echo $this->view->render('login/registro', [
-                    'errores' => $errores,
-                    'datos' => $_POST,
-                    'feedback' => $feedback,
-                    'errors' => $errors
-                ]);
+
+
             }
-
-
+        }  else {
+            header('Location: /login');
         }
     }
 

@@ -43,6 +43,16 @@ class LoginController extends Controller
 
                header('Location: /');
 
+           } else {
+               if (Session::get('errorPass')) {
+                   $errorP = Session::get('errorPass');
+                   echo $this->view->render('login/formulariologin', ['errorPass' => $errorP]);
+                   Session::destroy();
+               } else {
+                   $errorU = Session::get('errorUser');
+                   echo $this->view->render('login/formulariologin', ['errorUser' => $errorU]);
+                   Session::destroy();
+               }
            }
 
        } else if (isset($_POST['parametro']) && $_POST['parametro'] == 'nickname') {
@@ -61,6 +71,16 @@ class LoginController extends Controller
 
                header('Location: /');
 
+           } else {
+               if (Session::get('errorPass')) {
+                   $errorP = Session::get('errorPass');
+                   echo $this->view->render('login/formulariologin', ['errorPass' => $errorP]);
+                   Session::destroy();
+               } else {
+                   $errorU = Session::get('errorUser');
+                   echo $this->view->render('login/formulariologin', ['errorUser' => $errorU]);
+                   Session::destroy();
+               }
            }
 
 
@@ -74,45 +94,48 @@ class LoginController extends Controller
 
     public function registro()
     {
-        if ($_POST)
-        {
-            $datos = array ("nombre" => filter_var(trim(strtolower($_POST['nombre'])), FILTER_SANITIZE_STRING),
-                "apellidos" => filter_var(trim(strtolower($_POST['apellidos'])), FILTER_SANITIZE_STRING),
-                "email" => filter_var(trim(strtolower($_POST['email'])), FILTER_SANITIZE_STRING),
-                "nickname" => filter_var(trim(strtolower($_POST['nickname'])), FILTER_SANITIZE_STRING),
-                "cargo" => filter_var(trim(strtolower($_POST['cargo'])), FILTER_SANITIZE_STRING),
-                "clave" => $_POST['clave1']
-            );
+        if (Session::userIsLoggedIn()) {
+            if ($_POST) {
+                $datos = array("nombre" => filter_var(trim(strtolower($_POST['nombre'])), FILTER_SANITIZE_STRING),
+                    "apellidos" => filter_var(trim(strtolower($_POST['apellidos'])), FILTER_SANITIZE_STRING),
+                    "email" => filter_var(trim(strtolower($_POST['email'])), FILTER_SANITIZE_STRING),
+                    "nickname" => filter_var(trim(strtolower($_POST['nickname'])), FILTER_SANITIZE_STRING),
+                    "cargo" => filter_var(trim(strtolower($_POST['cargo'])), FILTER_SANITIZE_STRING),
+                    "clave" => $_POST['clave1']
+                );
 
-            $feedback = '';
-            $errors = '';
+                $feedback = '';
+                $errors = '';
 
-            $usuario = new Usuario;
+                $usuario = new Usuario;
 
-            if ( $usuario->insert($datos) ) {
-                if (! is_null(Session::get('feedback_positive')) && count(Session::get('feedback_positive'))>0) {
-                    $feedback = 'positive';
-                    $errores = Session::get('feedback_positive');
-                    var_dump($errores);
+                if ($usuario->insert($datos)) {
+                    if (!is_null(Session::get('feedback_positive')) && count(Session::get('feedback_positive')) > 0) {
+                        $feedback = 'positive';
+                        $errores = Session::get('feedback_positive');
+                        var_dump($errores);
+                    }
+                    echo $this->view->render('login/usuarioregistrado');
+                } else {
+                    if (!is_null(Session::get('feedback_negative')) && count(Session::get('feedback_negative')) > 0) {
+                        $feedback = 'negative';
+                        $errores = Session::get('feedback_negative');
+                    }
+                    echo $this->view->render('login/formularioregistro', [
+                        'errores' => $errores,
+                        'datos' => $_POST,
+                        'feedback' => $feedback,
+                        'errors' => $errors
+                    ]);
                 }
-                echo $this->view->render('login/usuarioregistrado');
+
+
             } else {
-                if (! is_null(Session::get('feedback_negative')) && count(Session::get('feedback_negative'))>0) {
-                    $feedback = 'negative';
-                    $errores = Session::get('feedback_negative');
-                }
-                echo $this->view->render('login/formularioregistro', [
-                    'errores' => $errores,
-                    'datos' => $_POST,
-                    'feedback' => $feedback,
-                    'errors' => $errors
-                ]);
+                $this->view->addData(['titulo' => 'Crear Trabajador']);
+                echo $this->view->render('login/formularioregistro');
             }
-
-
         } else {
-            $this->view->addData(['titulo' => 'Crear Trabajador']);
-            echo $this->view->render('login/formularioregistro');
+            header('Location: /login');
         }
     }
 

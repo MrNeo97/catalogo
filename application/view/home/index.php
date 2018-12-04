@@ -2,5 +2,5 @@
 
 <div class="container">
     <h1>Home</h1>
-    <p>Bienvenido <?php echo $user->nombre ?></p>
+    <p>Bienvenido <?php echo ucwords($user->nombre) ?></p>
 </div>

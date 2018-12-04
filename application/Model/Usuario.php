@@ -32,13 +32,13 @@ class Usuario
                 Session::set('user', $query);
                 return true;
             } else {
-                Session::set('pass', 'La contraseña es incorrecta');
-                return false;
+                Session::set('errorPass', 'La contraseña es incorrecta');
+                return true;
             }
 
         } else {
-            Session::set('pass', 'El param no existe en la base de datos');
-            return false;
+            Session::set('errorUser', 'El ' . $param . ' no existe en la base de datos');
+            return true;
         }
 
     }
