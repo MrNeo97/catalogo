@@ -5,25 +5,30 @@
     <title><?= $titulo ?? 'MINI3' ?></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- JS -->
-    <!-- please note: The JavaScript files are loaded in the footer to speed up page construction -->
-    <!-- See more here: http://stackoverflow.com/q/2105327/1114320 -->
-
-    <!-- CSS -->
+    <link href="<?php echo URL; ?>css/bootstrap.css" rel="stylesheet">
+    <link href="<?php echo URL; ?>css/font-awesome.min.css" rel="stylesheet">
     <link href="<?php echo URL; ?>css/style.css" rel="stylesheet">
 </head>
 <body>
 <!--<div class="logo"></div>-->
 
 <!-- navigation -->
-<?= $this->insert('partials/menu'); ?>
+<?php if(\Mini\Core\Session::userIsLoggedIn()) : $this->insert('partials/menu') ?>
+    <?php else : $this->insert('partials/menulogin') ?>
+<?php endif ?>
 
 <?= $this->section('content') ?>
 
-<div class="footer">
-    Find <a href="https://github.com/panique/mini3">MINI3 on GitHub</a>.
-    If you like the project, support it by <a href="http://tracking.rackspace.com/SH1ES">using Rackspace</a> as your hoster [affiliate link].
+<?php if(\Mini\Core\Session::userIsLoggedIn()) : ?>
+
+    <footer>
+        <a class="btn btn-danger" href="/login/cerrarSesion" role="button">Cerrar Sesión</a>
+    </footer>
+
+<?php endif ?>
+
+<div class="footer text-center">
+    <p>Copyright© Catalogo 2018</p>
 </div>
 
 <!-- jQuery, loaded in the recommended protocol-less way -->

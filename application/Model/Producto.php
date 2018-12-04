@@ -8,8 +8,146 @@
 
 namespace Mini\Model;
 
+use Mini\Core\Database;
+use Mini\Core\Session;
 
 class Producto
 {
 
+    public function getAll()
+    {
+
+        $conn = Database::getInstance()->getDatabase();
+        $ssql = "SELECT * FROM productos";
+        $query = $conn->prepare($ssql);
+        $query->execute();
+        return $query->fetchAll();
+
+    }
+
+    public static function insert($datos)
+    {
+
+        $conn = Database::getInstance()->getDatabase();
+        $errores_validacion = false;
+
+        if ( empty($datos['nombre']) ) {
+            Session::add('feedback_negative', 'No he recibido el asunto del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['descripcion'])) {
+            Session::add('feedback_negative', 'No he recibido la descripción de la pregunta');
+            $errores_validacion = true;
+        }
+        if ( empty($datos['fecha_alta'])) {
+            Session::add('feedback_negative', 'No he recibido la fecha del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['marca'])) {
+            Session::add('feedback_negative', 'No he recibido la marca del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['usuario_id'])) {
+            Session::add('feedback_negative', 'No he recibido el usuario del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['categoria_id'])) {
+            Session::add('feedback_negative', 'No he recibido la categoria del producto');
+            $errores_validacion = true;
+        }
+
+        if (strlen($datos['marca']) < 6 ) {
+            Session::add('feedback_negative', 'Marca no tiene suficientes caracteres');
+            $errores_validacion = true;
+
+        }
+
+        if ( $errores_validacion ) {
+            return false;
+        }
+
+        $params = [
+            ':nombre' => $datos['nombre'],
+            ':descripcion' => $datos['descripcion'],
+            ':fecha_alta' => $datos['fecha_alta'],
+            ':marca' => $datos['marca'],
+            ':usuario_id' => $datos['usuario_id'],
+            ':categoria_id' => $datos['categoria_id']
+        ];
+
+        $ssql = 'INSERT INTO productos (nombre, descripcion, fecha_alta, marca, usuario_id, categoria_id) 
+                  values(:nombre, :descripcion, :fecha_alta, :marca, :usuario_id, :categoria_id)';
+        $query = $conn->prepare($ssql);
+        $query->execute($params);
+        $cuenta = $query->rowCount();
+
+        if ($cuenta == 1) {
+            return $conn->lastInsertId();
+        }
+
+        return false;
+    }
+
+    public static function getId($id)
+    {
+
+        $conn = Database::getInstance()->getDatabase();
+        $id = (int) $id;
+
+        if ($id == 0) {
+            return false;
+        }
+
+        $ssql = "SELECT * FROM preguntas WHERE id=:id";
+        $query = $conn->prepare($ssql);
+        $query->bindValue(':id', $id);
+        $query->execute();
+        return $query->fetch();
+
+    }
+
+    public static function edit($datos)
+    {
+
+        $conn = Database::getInstance()->getDatabase();
+        $errores_validacion = false;
+
+        if (empty($datos['id'])) {
+            Session::add('feedback_negative','No he recibido la pregunta');
+            $errores_validacion = true;
+        }
+
+        if (empty($datos['asunto'])) {
+            Session::add('feedback_negative', 'No he recibido el asunto de la pregunta');
+            $errores_validacion = true;
+        }
+
+        if (empty($datos['cuerpo'])) {
+            Session::add('feedback_negative', 'No he recibido el cuerpo de la pregunta');
+            $errores_validacion = true;
+        }
+
+        if ($errores_validacion) return false;
+        $datos['id'] = (int) $datos['id'];
+        $ssql = "UPDATE preguntas SET asunto=:asunto, cuerpo=:cuerpo WHERE id=:id";
+        $query = $conn->prepare($ssql);
+        $params = [
+            ':asunto' => $datos['asunto'],
+            ':cuerpo' => $datos['cuerpo'],
+            ':id'	  => $datos['id']
+        ];
+
+        $query->execute($params);
+        $count = $query->rowCount();
+
+        if ($count == 1) {
+            return true;
+        }
+
+        return false;
+    }
 }

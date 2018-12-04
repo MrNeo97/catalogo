@@ -17,6 +17,6 @@ class Controller
     public function __construct()
     {
         $this->view = TemplatesFactory::templates();
-        //Session::init();
+        Session::init();
     }
 }

@@ -12,7 +12,8 @@
 namespace Mini\Controller;
 
 use Mini\Core\Controller;
-use Mini\Core\View;
+use Mini\Core\Session;
+use phpDocumentor\Reflection\Location;
 
 class HomeController extends Controller
 {
@@ -26,26 +27,12 @@ class HomeController extends Controller
 
     public function index()
     {
-        echo $this->view->render('home/index');
+        if (Session::userIsLoggedIn()) {
+            $user = Session::get('user')[0];
+            echo $this->view->render('home/index', [ 'user' => $user]);
+        } else {
+            header('Location: /login');
+        }
     }
 
-    /**
-     * PAGE: exampleone
-     * This method handles what happens when you move to http://yourproject/home/exampleone
-     * The camelCase writing is just for better readability. The method name is case-insensitive.
-     */
-    public function exampleOne()
-    {
-        echo $this->view->render('home/example_one');
-    }
-
-    /**
-     * PAGE: exampletwo
-     * This method handles what happens when you move to http://yourproject/home/exampletwo
-     * The camelCase writing is just for better readability. The method name is case-insensitive.
-     */
-    public function exampleTwo()
-    {
-        echo $this->view->render('home/example_two');
-    }
 }
