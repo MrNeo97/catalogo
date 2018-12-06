@@ -10,6 +10,7 @@ namespace Mini\Model;
 
 use Mini\Core\Database;
 use Mini\Core\Session;
+use Mini\Core\Validation;
 
 class Usuario
 {
@@ -22,11 +23,12 @@ class Usuario
 
         if( $query->fetchAll() ) {
             $conn = Database::getInstance()->getDatabase();
-            $ssql = "SELECT * FROM usuarios WHERE clave = '" . $clave . "'";
+            $ssql = "SELECT * FROM usuarios WHERE clave = '" . $clave . "' AND " . $param . " = '" . $user . "'";
             $query = $conn->prepare($ssql);
             $query->execute();
             $cuenta = $query->rowCount();
             $query = $query->fetchAll();
+            var_dump($query);
 
             if( $cuenta == 1 ) {
                 Session::set('user', $query);
@@ -47,65 +49,34 @@ class Usuario
     {
 
         $conn = Database::getInstance()->getDatabase();
-        $errores_validacion = false;
 
-        if ( empty($datos['nombre']) ) {
-            Session::add('feedback_negative', 'No he recibido el nombre del usuario');
-            $errores_validacion = true;
-        }
+        if(Validation::Validar($datos)) {
 
-        if ( empty($datos['apellidos'])) {
-            Session::add('feedback_negative', 'No he recibido los apellidos del usuario');
-            $errores_validacion = true;
-        }
+            $params = [
+                'nombre' => $datos['nombre'],
+                'apellidos' => $datos['apellidos'],
+                'email' => $datos['email'],
+                'nickname' => $datos['nickname'],
+                'clave' => md5($datos['clave']),
+                'rol' => $datos['cargo']
+            ];
 
-        if ( empty($datos['email'])) {
-            Session::add('feedback_negative', 'No he recibido el email del usuario');
-            $errores_validacion = true;
-        }
+            $fields = '(' . implode(',', array_keys($params)) . ')';
 
-        if ( empty($datos['nickname'])) {
-            Session::add('feedback_negative', 'No he recibido el nickname del usuario');
-            $errores_validacion = true;
-        }
+            $values = "(:" . implode(",:", array_keys($params)) . ")";
 
-        if ( empty($datos['cargo'])) {
-            Session::add('feedback_negative', 'No he recibido el cargo del usuario');
-            $errores_validacion = true;
-        }
+            $ssql = 'INSERT INTO usuarios ' . $fields . ' VALUES ' . $values;
+            $query = $conn->prepare($ssql);
+            $query->execute($params);
+            $cuenta = $query->rowCount();
 
-        if ( empty($datos['clave'])) {
-            Session::add('feedback_negative', 'No he recibido la clave del usuario');
-            $errores_validacion = true;
-        }
+            if ($cuenta == 1) {
+                return $conn->lastInsertId();
+            }
 
-        if ( $errores_validacion ) {
-            //echo 'HAY errores. false';
             return false;
         }
 
-        $params = [
-            'nombre' => $datos['nombre'],
-            'apellidos' => $datos['apellidos'],
-            'email' => $datos['email'],
-            'nickname' => $datos['nickname'],
-            'clave' => $datos['clave'],
-            'rol' => $datos['cargo']
-        ];
 
-        $fields = '(' . implode(',', array_keys($params)) . ')';
-
-        $values = "(:" . implode(",:", array_keys($params)) . ")";
-
-        $ssql = 'INSERT INTO usuarios ' . $fields . ' VALUES ' . $values;
-        $query = $conn->prepare($ssql);
-        $query->execute($params);
-        $cuenta = $query->rowCount();
-
-        if ($cuenta == 1) {
-            return $conn->lastInsertId();
-        }
-
-        return false;
     }
 }

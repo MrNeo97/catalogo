@@ -24,9 +24,17 @@ class Session
     {
         $_SESSION[$key][] = $value;
     }
+    public static function addAsoc($key, $name, $value)
+    {
+        $_SESSION[$key][$name] = $value;
+    }
     public static function destroy()
     {
         session_destroy();
+    }
+    public static function vaciar($value, $element)
+    {
+        unset($_SESSION[$value][$element]);
     }
     public static function userIsLoggedIn($user = 'user')
     {

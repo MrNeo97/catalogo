@@ -95,37 +95,30 @@ class LoginController extends Controller
     public function registro()
     {
         if (Session::userIsLoggedIn()) {
+
             if ($_POST) {
                 $datos = array("nombre" => filter_var(trim(strtolower($_POST['nombre'])), FILTER_SANITIZE_STRING),
                     "apellidos" => filter_var(trim(strtolower($_POST['apellidos'])), FILTER_SANITIZE_STRING),
                     "email" => filter_var(trim(strtolower($_POST['email'])), FILTER_SANITIZE_STRING),
                     "nickname" => filter_var(trim(strtolower($_POST['nickname'])), FILTER_SANITIZE_STRING),
                     "cargo" => filter_var(trim(strtolower($_POST['cargo'])), FILTER_SANITIZE_STRING),
-                    "clave" => $_POST['clave1']
+                    "clave" => $_POST['clave1'],
+                    "clave2" => $_POST['clave2']
                 );
-
-                $feedback = '';
-                $errors = '';
 
                 $usuario = new Usuario;
 
+                $errores = [];
+
                 if ($usuario->insert($datos)) {
-                    if (!is_null(Session::get('feedback_positive')) && count(Session::get('feedback_positive')) > 0) {
-                        $feedback = 'positive';
-                        $errores = Session::get('feedback_positive');
-                        var_dump($errores);
-                    }
                     echo $this->view->render('login/usuarioregistrado');
                 } else {
-                    if (!is_null(Session::get('feedback_negative')) && count(Session::get('feedback_negative')) > 0) {
-                        $feedback = 'negative';
+                    if (!is_null(Session::get('feedback_negative')) ) {
                         $errores = Session::get('feedback_negative');
                     }
                     echo $this->view->render('login/formularioregistro', [
                         'errores' => $errores,
-                        'datos' => $_POST,
-                        'feedback' => $feedback,
-                        'errors' => $errors
+                        'datos' => $datos
                     ]);
                 }
 

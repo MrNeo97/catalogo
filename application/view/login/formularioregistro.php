@@ -12,9 +12,9 @@
                     <label for="nombre">Nombre</label>
 
                     <input type="text" class="form-control" name="nombre"
-                        <?php //$error = new Errores(); $error->mostrarCampo('nombre'); ?>>
+                           value="<?= isset($datos['nombre']) ? $datos['nombre'] : '' ?>">
 
-                    <?php //$error->mostrarErrorCampo('nombre', $errores) ?>
+                    <p class="text-danger"><?= isset($errores['nombre']) ? $errores['nombre'] : '' ?></p>
                 </div>
 
                     <div class="form-group">
@@ -22,9 +22,9 @@
                     <label for="apellidos">Apellidos</label>
 
                     <input type="text" class="form-control" name="apellidos"
-                    <?php //mostrar_campo('apellidos'); ?>>
+                           value="<?= isset($datos['apellidos']) ? $datos['apellidos'] : '' ?>">
 
-                    <?php //mostrar_error_campo('apellidos', $errores) ?>
+                        <p class="text-danger"><?= isset($errores['apellidos']) ? $errores['apellidos'] : '' ?></p>
 			    </div>
 
                 <div class="form-group">
@@ -32,9 +32,9 @@
                     <label for="email">Email</label>
 
                     <input type="text" class="form-control" name="email"
-                        <?php //$error->mostrarCampo('email'); ?>>
+                           value="<?= isset($datos['email']) ? $datos['email'] : '' ?>">
 
-                    <?php //$error->mostrarErrorCampo('email', $errores) ?>
+                    <p class="text-danger"><?= isset($errores['email']) ? $errores['email'] : '' ?></p>
                 </div>
 
                 <div class="form-group">
@@ -42,9 +42,9 @@
                     <label for="nickname">Nickname</label>
 
                     <input type="text" class="form-control" name="nickname"
-                    <?php //mostrar_campo('nickname'); ?>>
+                           value="<?= isset($datos['nickname']) ? $datos['nickname'] : '' ?>">
 
-                    <?php //mostrar_error_campo('nickname', $errores) ?>
+                    <p class="text-danger"><?= isset($errores['nickname']) ? $errores['nickname'] : '' ?></p>
 			    </div>
 
                 <div class="form-group">
@@ -53,10 +53,12 @@
 
                     <select class="form-control" id="seleccion" name="cargo">
 
-                        <option value="empleado">Empleado</option>
-                        <option value="jefe">Jefe</option>
+                        <option value="empleado" <?php if(isset($datos['cargo']) && $datos['cargo'] == 'empleado') {  echo 'selected'; } ?>>Empleado</option>
+                        <option value="jefe" <?php if(isset($datos['cargo']) && $datos['cargo'] == 'jefe') {  echo 'selected'; } ?>>Jefe</option>
 
                     </select>
+
+                    <p class="text-danger"><?= isset($errores['cargo']) ? $errores['cargo'] : '' ?></p>
 
                 </div>
 
@@ -65,7 +67,8 @@
                     <label for="clave1">Clave</label>
 
                     <input type="password" class="form-control" name="clave1">
-                    <?php //$error->mostrarErrorCampo('clave', $errores) ?>
+
+                    <p class="text-danger"><?= isset($errores['clave']) ? $errores['clave'] : '' ?></p>
                 </div>
 
                 <div class="form-group">
@@ -75,10 +78,6 @@
 
                 </div>
 
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Aceptar términos y condiciones</label>
-                </div>
                 <br>
 
                 <button class="btn btn-primary" type="submit">Enviar</button>
