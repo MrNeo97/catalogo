@@ -50,7 +50,9 @@ class Usuario
 
         $conn = Database::getInstance()->getDatabase();
 
-        if(Validation::Validar($datos)) {
+        $validacion = new Validation();
+
+        if($validacion->validar($datos)) {
 
             $params = [
                 'nombre' => $datos['nombre'],
