@@ -10,6 +10,7 @@ namespace Mini\Model;
 
 use Mini\Core\Database;
 use Mini\Core\Session;
+use Mini\Core\Validation;
 
 class Producto
 {
@@ -29,67 +30,36 @@ class Producto
     {
 
         $conn = Database::getInstance()->getDatabase();
-        $errores_validacion = false;
 
-        if ( empty($datos['nombre']) ) {
-            Session::add('feedback_negative', 'No he recibido el asunto del producto');
-            $errores_validacion = true;
-        }
+        $validacion = new Validation();
 
-        if ( empty($datos['descripcion'])) {
-            Session::add('feedback_negative', 'No he recibido la descripción de la pregunta');
-            $errores_validacion = true;
-        }
-        if ( empty($datos['fecha_alta'])) {
-            Session::add('feedback_negative', 'No he recibido la fecha del producto');
-            $errores_validacion = true;
-        }
+        if($validacion->validarProducto($datos)) {
 
-        if ( empty($datos['marca'])) {
-            Session::add('feedback_negative', 'No he recibido la marca del producto');
-            $errores_validacion = true;
-        }
+            $params = [
+                'nombre' => $datos['nombre'],
+                'descripcion' => $datos['descripcion'],
+                'fecha_alta' => $datos['fecha_alta'],
+                'marca' => $datos['marca'],
+                'usuario_id' => $datos['usuario_id'],
+                'categoria_id' => $datos['categoria_id']
+            ];
 
-        if ( empty($datos['usuario_id'])) {
-            Session::add('feedback_negative', 'No he recibido el usuario del producto');
-            $errores_validacion = true;
-        }
+            $fields = '(' . implode(',', array_keys($params)) . ')';
 
-        if ( empty($datos['categoria_id'])) {
-            Session::add('feedback_negative', 'No he recibido la categoria del producto');
-            $errores_validacion = true;
-        }
+            $values = "(:" . implode(",:", array_keys($params)) . ")";
 
-        if (strlen($datos['marca']) < 6 ) {
-            Session::add('feedback_negative', 'Marca no tiene suficientes caracteres');
-            $errores_validacion = true;
+            $ssql = 'INSERT INTO productos ' . $fields . ' VALUES ' . $values;
+            $query = $conn->prepare($ssql);
+            $query->execute($params);
+            $cuenta = $query->rowCount();
 
-        }
+            if ($cuenta == 1) {
+                return $conn->lastInsertId();
+            }
 
-        if ( $errores_validacion ) {
             return false;
         }
 
-        $params = [
-            ':nombre' => $datos['nombre'],
-            ':descripcion' => $datos['descripcion'],
-            ':fecha_alta' => $datos['fecha_alta'],
-            ':marca' => $datos['marca'],
-            ':usuario_id' => $datos['usuario_id'],
-            ':categoria_id' => $datos['categoria_id']
-        ];
-
-        $ssql = 'INSERT INTO productos (nombre, descripcion, fecha_alta, marca, usuario_id, categoria_id) 
-                  values(:nombre, :descripcion, :fecha_alta, :marca, :usuario_id, :categoria_id)';
-        $query = $conn->prepare($ssql);
-        $query->execute($params);
-        $cuenta = $query->rowCount();
-
-        if ($cuenta == 1) {
-            return $conn->lastInsertId();
-        }
-
-        return false;
     }
 
     public static function getId($id)
@@ -151,3 +121,43 @@ class Producto
         return false;
     }
 }
+
+
+/*if ( empty($datos['nombre']) ) {
+            Session::add('feedback_negative', 'No he recibido el asunto del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['descripcion'])) {
+            Session::add('feedback_negative', 'No he recibido la descripción de la pregunta');
+            $errores_validacion = true;
+        }
+        if ( empty($datos['fecha_alta'])) {
+            Session::add('feedback_negative', 'No he recibido la fecha del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['marca'])) {
+            Session::add('feedback_negative', 'No he recibido la marca del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['usuario_id'])) {
+            Session::add('feedback_negative', 'No he recibido el usuario del producto');
+            $errores_validacion = true;
+        }
+
+        if ( empty($datos['categoria_id'])) {
+            Session::add('feedback_negative', 'No he recibido la categoria del producto');
+            $errores_validacion = true;
+        }
+
+        if (strlen($datos['marca']) < 6 ) {
+            Session::add('feedback_negative', 'Marca no tiene suficientes caracteres');
+            $errores_validacion = true;
+
+        }
+
+        if ( $errores_validacion ) {
+            return false;
+        }*/

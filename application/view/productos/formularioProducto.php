@@ -1,7 +1,5 @@
 <?php $this->layout('layout') ?>
 
-<?php //$this->insert('partials/feedback', ['feedback' => $feedback]) ?>
-
 <form action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
     <div class="container">
         <div class="row">
@@ -20,6 +18,8 @@
                     <input type="text" class="form-control" name="nombre"
                            value="<?= isset($datos['nombre']) ? $datos['nombre'] : '' ?>">
 
+                    <p class="text-danger"><?= isset($errores['nombre']) ? $errores['nombre'] : '' ?></p>
+
                 </div>
                 <br>
 
@@ -29,6 +29,8 @@
 
                     <input type="text" class="form-control" name="descripcion"
                            value="<?= isset($datos['descripcion']) ? $datos['descripcion'] : '' ?>">
+
+                    <p class="text-danger"><?= isset($errores['descripcion']) ? $errores['descripcion'] : '' ?></p>
 
                 </div>
                 <br>
@@ -40,6 +42,8 @@
                     <input type="text" class="form-control" name="marca"
                         value="<?= isset($datos['marca']) ? $datos['marca'] : '' ?>">
 
+                    <p class="text-danger"><?= isset($errores['marca']) ? $errores['marca'] : '' ?></p>
+
                 </div>
                 <br>
 
@@ -47,15 +51,17 @@
 
                     <label for="categoria">Categoría</label>
 
-                    <select class="form-control" id="seleccion" name="categoria">
+                    <select class="form-control" id="seleccion" name="categoria_id">
 
-                        <option value="1">Electrodomesticos</option>
-                        <option value="2">Juguetes</option>
-                        <option value="3">Herramientas</option>
-                        <option value="4">Videojuegos</option>
-                        <option value="5">Libros</option>
+                        <option value="1" <?php if(isset($datos['categoria_id']) && $datos['categoria_id'] == 1) {  echo 'selected'; } ?>>Electrodomesticos</option>
+                        <option value="2" <?php if(isset($datos['categoria_id']) && $datos['categoria_id'] == 2) {  echo 'selected'; } ?>>Juguetes</option>
+                        <option value="3" <?php if(isset($datos['categoria_id']) && $datos['categoria_id'] == 3) {  echo 'selected'; } ?>>Herramientas</option>
+                        <option value="4" <?php if(isset($datos['categoria_id']) && $datos['categoria_id'] == 4) {  echo 'selected'; } ?>>Videojuegos</option>
+                        <option value="5" <?php if(isset($datos['categoria_id']) && $datos['categoria_id'] == 5) {  echo 'selected'; } ?>>Libros</option>
 
                     </select>
+
+                    <p class="text-danger"><?= isset($errores['categoria_id']) ? $errores['categoria_id'] : '' ?></p>
 
                 </div>
                 <br>

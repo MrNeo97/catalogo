@@ -51,37 +51,30 @@ class ProductosController extends Controller
 
                 $fecha = date('Y-m-d');
 
+
                 $datos = array("nombre" => filter_var(trim(strtolower($_POST['nombre'])), FILTER_SANITIZE_STRING),
                     "descripcion" => filter_var(trim(strtolower($_POST['descripcion'])), FILTER_SANITIZE_STRING),
                     "fecha_alta" => $fecha,
                     "marca" => filter_var(trim(strtolower($_POST['marca'])), FILTER_SANITIZE_STRING),
-                    "usuario_id" => 1,
-                    "categoria_id" => 1
+                    "usuario_id" => Session::get()[0]->id,
+                    "categoria_id" => filter_var(trim(strtolower($_POST['categoria_id'])), FILTER_SANITIZE_STRING)
                 );
 
-                $feedback = '';
-                $errors = '';
+                $producto = new Producto;
 
-                if (Producto::insert($datos)) {
-                    if (!is_null(Session::get('feedback_positive')) && count(Session::get('feedback_positive')) > 0) {
-                        $feedback = 'positive';
-                        $errores = Session::get('feedback_positive');
-                        var_dump($errores);
-                    }
-                    echo $this->view->render('login/usuarioregistrado');
+                $errores = [];
+
+                if ($producto->insert($datos)) {
+                    echo $this->view->render('productos/productoinsertado');
                 } else {
-                    if (!is_null(Session::get('feedback_negative')) && count(Session::get('feedback_negative')) > 0) {
-                        $feedback = 'negative';
+                    if (!is_null(Session::get('feedback_negative')) ) {
                         $errores = Session::get('feedback_negative');
                     }
-                    echo $this->view->render('login/registro', [
+                    echo $this->view->render('productos/formularioProducto', [
                         'errores' => $errores,
-                        'datos' => $_POST,
-                        'feedback' => $feedback,
-                        'errors' => $errors
+                        'datos' => $datos
                     ]);
                 }
-
 
             }
         }  else {

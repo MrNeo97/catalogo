@@ -15,10 +15,10 @@ class Validation
     private $value = 'feedback_negative';
     private $form = 'form';
 
-    public function validator($datos, $name, $long = 3)
+    public function validator($datos, $name, $long = 3, $tabla = 'usuario')
     {
         if ( empty($datos[$name]) || ! isset($datos[$name])) {
-            Session::addAsoc($this->value, $name,'No he recibido el ' . $name . ' del usuario');
+            Session::addAsoc($this->value, $name,'No he recibido ' . $name . ' de ' . $tabla);
             $this->errores_validacion  = true;
         } elseif (strlen($datos[$name]) < $long ) {
             Session::addAsoc($this->value, $name,'Campo ' . $name . ' demasiado corto');
@@ -29,10 +29,10 @@ class Validation
         }
     }
 
-    public function validatorSelect($datos, $name)
+    public function validatorSelect($datos, $name, $tabla = 'usuario')
     {
         if ( empty($datos[$name]) || ! isset($datos[$name])) {
-            Session::addAsoc($this->value, $name, 'No he recibido el ' . $name . ' del usuario');
+            Session::addAsoc($this->value, $name, 'No he recibido el ' . $name . ' de ' . $tabla);
             $this->errores_validacion = true;
         } else {
             Session::set($this->form, $key = $datos[$name]);
@@ -40,10 +40,10 @@ class Validation
         }
     }
 
-    public function validatorPass($datos, $pass, $pass2)
+    public function validatorPass($datos, $pass, $pass2, $tabla = 'usuario')
     {
         if ( empty($datos[$pass]) ) {
-            Session::addAsoc('feedback_negative', $pass, 'No he recibido la clave del usuario');
+            Session::addAsoc('feedback_negative', $pass, 'No he recibido la clave del ' . $tabla);
             $this->errores_validacion = true;
         } elseif (strlen($datos[$pass]) < 6 ) {
             Session::addAsoc('feedback_negative', $pass,'La clave debe tener al menos, 6 caracteres');
@@ -74,6 +74,20 @@ class Validation
         Validation::validator($datos, $name = 'nickname');
         Validation::validatorSelect($datos, $name = 'cargo');
         Validation::validatorPass($datos, $pass = 'clave', $pass2 = 'clave2');
+
+        if ( $this->errores_validacion ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function validarProducto($datos)
+    {
+        Validation::validator($datos, $name = 'nombre');
+        Validation::validator($datos, $name = 'descripcion', $long = 6);
+        Validation::validator($datos, $name = 'marca');
+        Validation::validatorSelect($datos, $name = 'categoria_id');
 
         if ( $this->errores_validacion ) {
             return false;
