@@ -2,6 +2,8 @@
 
 <form action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
     <div class="container">
+
+        <p class="text-danger"><?= isset($datos) ? var_dump($datos) : '' ?></p>
         <div class="row">
             <div class="col-6">
 

@@ -83,9 +83,38 @@ class ProductosController extends Controller
         }
     }
 
-    public function editar()
+    public function editar($nombre, $descripcion, $marca, $categoria)
     {
+        if (Session::userIsLoggedIn()) {
 
+            if(!$nombre || !$descripcion || !$marca || !$categoria) {
+                header('Location: /productos/listar');
+            }
+
+            if ($nombre && $descripcion && $marca && $categoria) {
+
+                if (! $_POST) {
+                    $datos = ['nombre' => trim(str_replace('%20', ' ', $nombre)),
+                        'descripcion' => trim(str_replace('%20', ' ', $descripcion)),
+                        'marca' => trim(str_replace('%20', ' ', $marca)),
+                        'categoria_id' => trim(str_replace('%20', ' ', $categoria))];
+
+                    echo $this->view->render('productos/formularioProducto', [
+                        'datos' => $datos
+                    ]);
+                } else {
+
+                    echo 'Se ha enviado ya';
+
+                }
+
+            } else {
+                header('Location: /productos/listar');
+            }
+
+        } else {
+            header('Location: /login');
+        }
     }
 
     public function eliminar($id)

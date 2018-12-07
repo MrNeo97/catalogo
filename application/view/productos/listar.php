@@ -31,7 +31,8 @@
             <td><?= $producto->fecha_alta ?></td>
             <td><?= $producto->categoria_id ?></td>
                 <td>
-                    <a href="#"><i class="fa fa-pencil-alt" style="font-size:25px"></i></a>
+                    <a href="/productos/editar/<?= $producto->nombre ?>/<?= $producto->descripcion ?>/
+                    <?= $producto->marca ?>/<?= $producto->categoria_id ?>"><i class="fa fa-pencil-alt" style="font-size:25px"></i></a>
                     <a href="/productos/eliminar/<?= $producto->id ?>"><i class="fa fa-trash-alt" style="font-size:25px;color:red"></i></a>
                 </td>
             </tr>
