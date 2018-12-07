@@ -1,7 +1,7 @@
 <?= $this->layout('layout') ?>
 
-
 <div class="container">
+    <div class="p-3 mb-2 bg-danger text-white" <?= isset($errores) ?  : 'hidden' ?>><?= isset($errores) ? $errores : '' ?></div>
     <h2>Todos los productos</h2>
     <?php if (count($productos) == 0) : ?>
         <p>No tenemos productos en la Base de Datos</p>
@@ -16,9 +16,11 @@
                 <th>Marca</th>
                 <th>Fecha de alta</th>
                 <th>Categoría</th>
+                <th>Acción</th>
             </tr>
             </thead>
             <tbody>
+            <?php $hola = 'holitaa' ?>
 
         <?php foreach ($productos as $producto) : ?>
 
@@ -28,6 +30,10 @@
             <td><?= $producto->marca ?></td>
             <td><?= $producto->fecha_alta ?></td>
             <td><?= $producto->categoria_id ?></td>
+                <td>
+                    <a href="#"><i class="fa fa-pencil-alt" style="font-size:25px"></i></a>
+                    <a href="/productos/eliminar/<?= $producto->id ?>"><i class="fa fa-trash-alt" style="font-size:25px;color:red"></i></a>
+                </td>
             </tr>
 
         <?php endforeach ?>

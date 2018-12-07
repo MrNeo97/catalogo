@@ -120,44 +120,22 @@ class Producto
 
         return false;
     }
+
+    public function eliminar($id)
+    {
+        $conn = Database::getInstance()->getDatabase();
+
+        $ssql = "DELETE FROM productos WHERE id = " . $id;
+        $query = $conn->prepare($ssql);
+        $query->execute();
+
+        $count = $query->rowCount();
+
+        if ($count == 1) {
+            return true;
+        }
+
+        return false;
+
+    }
 }
-
-
-/*if ( empty($datos['nombre']) ) {
-            Session::add('feedback_negative', 'No he recibido el asunto del producto');
-            $errores_validacion = true;
-        }
-
-        if ( empty($datos['descripcion'])) {
-            Session::add('feedback_negative', 'No he recibido la descripción de la pregunta');
-            $errores_validacion = true;
-        }
-        if ( empty($datos['fecha_alta'])) {
-            Session::add('feedback_negative', 'No he recibido la fecha del producto');
-            $errores_validacion = true;
-        }
-
-        if ( empty($datos['marca'])) {
-            Session::add('feedback_negative', 'No he recibido la marca del producto');
-            $errores_validacion = true;
-        }
-
-        if ( empty($datos['usuario_id'])) {
-            Session::add('feedback_negative', 'No he recibido el usuario del producto');
-            $errores_validacion = true;
-        }
-
-        if ( empty($datos['categoria_id'])) {
-            Session::add('feedback_negative', 'No he recibido la categoria del producto');
-            $errores_validacion = true;
-        }
-
-        if (strlen($datos['marca']) < 6 ) {
-            Session::add('feedback_negative', 'Marca no tiene suficientes caracteres');
-            $errores_validacion = true;
-
-        }
-
-        if ( $errores_validacion ) {
-            return false;
-        }*/

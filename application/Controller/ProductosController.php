@@ -30,6 +30,7 @@ class ProductosController extends Controller
             $productos = new Producto();
             $productos = $productos->getAll();
 
+            $this->view->addData(['titulo' => 'Listado Productos']);
             echo $this->view->render('productos/listar', [
                 'productos' => $productos,
                 'titulo' => $this->titulo
@@ -85,6 +86,39 @@ class ProductosController extends Controller
     public function editar()
     {
 
+    }
+
+    public function eliminar($id)
+    {
+
+        if (Session::userIsLoggedIn()) {
+
+            if( ! $id) {
+
+                header('Location: /productos/listar');
+
+            } else {
+
+                $producto = new Producto;
+
+                if ($producto->eliminar($id))
+                {
+                    header('Location: /productos/listar');
+
+                } else {
+
+                    $listar = $producto->getAll();
+                    echo $this->view->render('productos/listar', [
+                        'errores' => 'No se ha podido borrar la fila deseada',
+                        'productos' => $listar
+                    ]);
+                }
+
+            }
+
+        } else {
+            header('Location: /login');
+        }
     }
 
 }
