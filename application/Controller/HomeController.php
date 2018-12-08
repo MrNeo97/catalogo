@@ -13,6 +13,7 @@ namespace Mini\Controller;
 
 use Mini\Core\Controller;
 use Mini\Core\Session;
+use Mini\Model\Producto;
 use phpDocumentor\Reflection\Location;
 
 class HomeController extends Controller
@@ -35,6 +36,5 @@ class HomeController extends Controller
             header('Location: /login');
         }
     }
-
 
 }

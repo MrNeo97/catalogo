@@ -187,4 +187,22 @@ class ProductosController extends Controller
         }
     }
 
+    public function producto($id)
+    {
+        if(!$id) {
+            header('Location: /productos');
+        }
+
+        $producto = Producto::getId($id);
+
+        if ($producto) {
+
+            echo $this->view->render('productos/producto', ['producto' => $producto]);
+
+        } else {
+            header('Location: /productos');
+        }
+
+    }
+
 }

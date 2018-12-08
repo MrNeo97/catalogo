@@ -8,6 +8,7 @@
         <div class="container">
             <h3><?= $producto->nombre ?></h3>
             <p><?= $producto->descripcion ?></p>
+            <p><a href="/productos/producto/<?= $producto->id ?>">[Leer más]</a></p>
         </div>
 
     <?php endforeach ?>
