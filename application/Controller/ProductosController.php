@@ -24,6 +24,18 @@ class ProductosController extends Controller
         $this->titulo = 'Productos';
     }
 
+    public function index()
+    {
+        $productos = new Producto();
+        $productos = $productos->getAll();
+
+        $this->view->addData(['titulo' => 'Listado Productos']);
+        echo $this->view->render('productos/index', [
+            'productos' => $productos,
+            'titulo' => $this->titulo
+        ]);
+    }
+
     public function listar()
     {
         if (Session::userIsLoggedIn()) {

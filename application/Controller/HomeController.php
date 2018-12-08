@@ -28,11 +28,13 @@ class HomeController extends Controller
     public function index()
     {
         if (Session::userIsLoggedIn()) {
+
             $user = Session::get('user')[0];
             echo $this->view->render('home/index', [ 'user' => $user]);
         } else {
             header('Location: /login');
         }
     }
+
 
 }

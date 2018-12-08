@@ -116,6 +116,7 @@ class LoginController extends Controller
                     if (!is_null(Session::get('feedback_negative')) ) {
                         $errores = Session::get('feedback_negative');
                     }
+
                     echo $this->view->render('login/formularioregistro', [
                         'errores' => $errores,
                         'datos' => $datos
@@ -124,6 +125,7 @@ class LoginController extends Controller
 
 
             } else {
+
                 $this->view->addData(['titulo' => 'Crear Trabajador']);
                 echo $this->view->render('login/formularioregistro');
             }

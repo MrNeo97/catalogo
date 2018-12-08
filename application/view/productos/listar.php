@@ -20,7 +20,6 @@
             </tr>
             </thead>
             <tbody>
-            <?php $hola = 'holitaa' ?>
 
         <?php foreach ($productos as $producto) : ?>
 
