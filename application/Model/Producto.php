@@ -72,7 +72,7 @@ class Producto
             return false;
         }
 
-        $ssql = "SELECT * FROM preguntas WHERE id=:id";
+        $ssql = "SELECT * FROM productos WHERE id=:id";
         $query = $conn->prepare($ssql);
         $query->bindValue(':id', $id);
         $query->execute();
@@ -80,48 +80,39 @@ class Producto
 
     }
 
-    public static function edit($datos)
+    public static function editar($datos)
     {
 
         $conn = Database::getInstance()->getDatabase();
-        $errores_validacion = false;
 
-        if (empty($datos['id'])) {
-            Session::add('feedback_negative','No he recibido la pregunta');
-            $errores_validacion = true;
+        $validacion = new Validation;
+
+        if($validacion->validarProducto($datos)) {
+
+            $datos['id'] = (int) $datos['id'];
+            $ssql = "UPDATE productos SET nombre='" . $datos['nombre'] . "', descripcion='" . $datos['descripcion'] . "', marca='" . $datos['marca'] . "', categoria_id='" . $datos['categoria_id'] . "' WHERE id=" . $datos['id'];
+            $query = $conn->prepare($ssql);
+            $params = [
+                ':id'	  => $datos['id'],
+                ':nombre' => $datos['nombre'],
+                ':descripcion' => $datos['descripcion'],
+                ':marca' => $datos['marca'],
+                ':categoria_id' => $datos['categoria_id']
+            ];
+
+            $query->execute($params);
+            $count = $query->rowCount();
+
+            if ($count == 1) {
+                return true;
+            }
+
+            return false;
         }
 
-        if (empty($datos['asunto'])) {
-            Session::add('feedback_negative', 'No he recibido el asunto de la pregunta');
-            $errores_validacion = true;
-        }
-
-        if (empty($datos['cuerpo'])) {
-            Session::add('feedback_negative', 'No he recibido el cuerpo de la pregunta');
-            $errores_validacion = true;
-        }
-
-        if ($errores_validacion) return false;
-        $datos['id'] = (int) $datos['id'];
-        $ssql = "UPDATE preguntas SET asunto=:asunto, cuerpo=:cuerpo WHERE id=:id";
-        $query = $conn->prepare($ssql);
-        $params = [
-            ':asunto' => $datos['asunto'],
-            ':cuerpo' => $datos['cuerpo'],
-            ':id'	  => $datos['id']
-        ];
-
-        $query->execute($params);
-        $count = $query->rowCount();
-
-        if ($count == 1) {
-            return true;
-        }
-
-        return false;
     }
 
-    public function eliminar($id)
+    public static function eliminar($id)
     {
         $conn = Database::getInstance()->getDatabase();
 

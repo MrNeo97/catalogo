@@ -83,28 +83,53 @@ class ProductosController extends Controller
         }
     }
 
-    public function editar($nombre, $descripcion, $marca, $categoria)
+    public function editar($id)
     {
         if (Session::userIsLoggedIn()) {
 
-            if(!$nombre || !$descripcion || !$marca || !$categoria) {
+            if(!$id) {
                 header('Location: /productos/listar');
             }
 
-            if ($nombre && $descripcion && $marca && $categoria) {
+            $datos = Producto::getId($id);
+
+            if ($datos) {
+
+                $datos = ['id' => $datos->id, 'nombre' => $datos->nombre, 'descripcion' => $datos->descripcion,
+                    'marca' => $datos->marca, 'categoria_id' => $datos->categoria_id
+                    ];
 
                 if (! $_POST) {
-                    $datos = ['nombre' => trim(str_replace('%20', ' ', $nombre)),
-                        'descripcion' => trim(str_replace('%20', ' ', $descripcion)),
-                        'marca' => trim(str_replace('%20', ' ', $marca)),
-                        'categoria_id' => trim(str_replace('%20', ' ', $categoria))];
 
+                    $this->view->addData(['titulo' => 'Modificar Producto']);
                     echo $this->view->render('productos/formularioProducto', [
-                        'datos' => $datos
+                        'datos' => $datos,
+                        'title' => 'Modificar'
                     ]);
+
                 } else {
 
-                    echo 'Se ha enviado ya';
+                    $datos = ['id' => $datos['id'], 'nombre' => $_POST['nombre'], 'descripcion' => $_POST['descripcion'],
+                        'marca' => $_POST['marca'], 'categoria_id' => $_POST['categoria_id']
+                    ];
+
+                    $errores = [];
+
+                    $producto = new Producto;
+
+                    if ($producto->editar($datos)) {
+                        echo $this->view->render('productos/productomodificado');
+                    } else {
+                        if (!is_null(Session::get('feedback_negative')) ) {
+                            $errores = Session::get('feedback_negative');
+                        }
+                        $this->view->addData(['titulo' => 'Modificar Producto']);
+                        echo $this->view->render('productos/formularioProducto', [
+                            'datos' => $datos,
+                            'errores' => $errores,
+                            'title' => 'Modificar'
+                        ]);
+                    }
 
                 }
 

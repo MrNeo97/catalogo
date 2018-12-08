@@ -3,7 +3,7 @@
 <form action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
     <div class="container">
 
-        <p class="text-danger"><?= isset($datos) ? var_dump($datos) : '' ?></p>
+        <p class="text-danger"><?php //isset($datos) ? var_dump($datos) : '' ?></p>
         <div class="row">
             <div class="col-6">
 
@@ -13,12 +13,12 @@
 
                 <div class="form-group">
 
-                    <h1>Crear producto</h1>
+                    <h1><?= $title ?? 'Crear' ?> producto</h1>
 
                     <label for="nombre">Nombre</label>
 
                     <input type="text" class="form-control" name="nombre"
-                           value="<?= isset($datos['nombre']) ? $datos['nombre'] : '' ?>">
+                           value="<?= isset($datos['nombre']) ? $datos['nombre'] : '' ?><?= isset($datos->nombre) ? $datos->nombre : '' ?>">
 
                     <p class="text-danger"><?= isset($errores['nombre']) ? $errores['nombre'] : '' ?></p>
 
