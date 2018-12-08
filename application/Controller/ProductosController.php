@@ -145,7 +145,7 @@ class ProductosController extends Controller
     public function eliminar($id)
     {
 
-        if (Session::userIsLoggedIn()) {
+        if (Session::userIsLoggedIn() && Session::jefeIsLoggedIn()) {
 
             if( ! $id) {
 

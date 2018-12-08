@@ -94,7 +94,7 @@ class LoginController extends Controller
 
     public function registro()
     {
-        if (Session::userIsLoggedIn()) {
+        if (Session::userIsLoggedIn() && Session::jefeIsLoggedIn()) {
 
             if ($_POST) {
                 $datos = array("nombre" => filter_var(trim(strtolower($_POST['nombre'])), FILTER_SANITIZE_STRING),

@@ -32,7 +32,9 @@
             <td><?= $producto->categoria_id ?></td>
                 <td>
                     <a href="/productos/editar/<?= $producto->id ?>"><i class="fa fa-pencil-alt" style="font-size:25px"></i></a>
+                    <?php if(\Mini\Core\Session::jefeIsLoggedIn()) : ?>
                     <a href="/productos/eliminar/<?= $producto->id ?>"><i class="fa fa-trash-alt" style="font-size:25px;color:red"></i></a>
+                    <?php endif ?>
                 </td>
             </tr>
 

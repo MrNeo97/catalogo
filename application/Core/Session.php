@@ -40,4 +40,11 @@ class Session
     {
         return (Session::get($user) ? true : false);
     }
+    public static function jefeIsLoggedIn()
+    {
+        if (Session::get()[0]->rol == 'jefe') {
+            return true;
+        }
+        return false;
+    }
 }
