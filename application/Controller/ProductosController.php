@@ -12,6 +12,8 @@ use Mini\Core\Controller;
 use Mini\Core\View;
 use Mini\Core\Session;
 use Mini\Model\Producto;
+use Mini\Model\Categoria;
+use Mini\Model\Usuario;
 
 
 class ProductosController extends Controller
@@ -42,10 +44,17 @@ class ProductosController extends Controller
             $productos = new Producto();
             $productos = $productos->getAll();
 
+            foreach ($productos as $producto) {
+                $categoria[] = Categoria::getCategoria($producto->categoria_id);
+            }
+
+            //var_dump($categoria);
+
             $this->view->addData(['titulo' => 'Listado Productos']);
             echo $this->view->render('productos/listar', [
                 'productos' => $productos,
-                'titulo' => $this->titulo
+                'titulo' => $this->titulo,
+                'categorias' => $categoria
             ]);
         }  else {
             header('Location: /login');
@@ -195,9 +204,13 @@ class ProductosController extends Controller
 
         $producto = Producto::getId($id);
 
+        $categoria = Categoria::getCategoria($producto->categoria_id);
+        $usuario = Usuario::getUsuario($producto->usuario_id);
+
         if ($producto) {
 
-            echo $this->view->render('productos/producto', ['producto' => $producto]);
+            echo $this->view->render('productos/producto', ['producto' => $producto,
+                'categoria' => $categoria, 'usuario' => $usuario]);
 
         } else {
             header('Location: /productos');

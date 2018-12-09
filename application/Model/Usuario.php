@@ -78,7 +78,16 @@ class Usuario
 
             return false;
         }
+    }
 
+    public static function getUsuario($usuario_id)
+    {
+
+        $conn = Database::getInstance()->getDatabase();
+        $ssql = "SELECT * FROM usuarios WHERE id = " . $usuario_id;
+        $query = $conn->prepare($ssql);
+        $query->execute();
+        return $query->fetchAll();
 
     }
 }

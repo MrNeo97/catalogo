@@ -12,8 +12,8 @@
 
         <p>Marca: <?= $producto->marca ?></p>
         <p>Fecha de creación: <?= $producto->fecha_alta ?></p>
-        <p>Categoría: <?= $producto->categoria_id ?></p>
-        <p>Creado por: <?= $producto->usuario_id ?></p>
+        <p>Categoría: <?= $categoria[0]->nombre ?></p>
+        <p>Creado por: <?= ucwords($usuario[0]->nombre) ?></p>
     </div>
 
 </div>

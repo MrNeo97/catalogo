@@ -21,14 +21,14 @@
             </thead>
             <tbody>
 
-        <?php foreach ($productos as $producto) : ?>
+        <?php for ($i = 0; $i < count($categorias); $i++) : ?>
 
             <tr>
-            <td><?= $producto->nombre ?></td>
-            <td><?= $producto->descripcion ?></td>
-            <td><?= $producto->marca ?></td>
-            <td><?= $producto->fecha_alta ?></td>
-            <td><?= $producto->categoria_id ?></td>
+            <td><?= $productos[$i]->nombre ?></td>
+            <td><?= $productos[$i]->descripcion ?></td>
+            <td><?= $productos[$i]->marca ?></td>
+            <td><?= $productos[$i]->fecha_alta ?></td>
+            <td><?= $categorias[$i][0]->nombre ?></td>
                 <td>
                     <a href="/productos/editar/<?= $producto->id ?>"><i class="fa fa-pencil-alt" style="font-size:25px"></i></a>
                     <?php if(\Mini\Core\Session::jefeIsLoggedIn()) : ?>
@@ -37,7 +37,7 @@
                 </td>
             </tr>
 
-        <?php endforeach ?>
+        <?php endfor ?>
 
             </tbody>
         </table>
