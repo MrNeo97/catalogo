@@ -15,8 +15,12 @@
 <!--<div class="logo"></div>-->
 
 <!-- navigation -->
-<?php if(\Mini\Core\Session::userIsLoggedIn()) : $this->insert('partials/menu') ?>
+<?php if(\Mini\Core\Session::userIsLoggedIn() && \Mini\Core\Session::jefeIsLoggedIn()) : $this->insert('partials/menu') ?>
+
+    <?php elseif(\Mini\Core\Session::userIsLoggedIn()) : $this->insert('partials/menuempleado') ?>
+
     <?php else : $this->insert('partials/menulogin') ?>
+
 <?php endif ?>
 
 <?= $this->section('content') ?>
