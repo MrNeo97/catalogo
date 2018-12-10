@@ -12,11 +12,11 @@ use Mini\Core\Database;
 
 class Categoria
 {
-    public static function getCategoria($categoria_id)
+    public static function buscar($param, $value)
     {
 
         $conn = Database::getInstance()->getDatabase();
-        $ssql = "SELECT * FROM categorias WHERE id = " . $categoria_id;
+        $ssql = "SELECT * FROM categorias WHERE " . $param . "='" . $value ."'";
         $query = $conn->prepare($ssql);
         $query->execute();
         return $query->fetchAll();

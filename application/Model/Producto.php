@@ -26,6 +26,17 @@ class Producto
 
     }
 
+    public static function buscar($param, $value)
+    {
+
+        $conn = Database::getInstance()->getDatabase();
+        $ssql = "SELECT * FROM productos WHERE " . $param . "='" . $value ."'";
+        $query = $conn->prepare($ssql);
+        $query->execute();
+        return $query->fetchAll();
+
+    }
+
     public static function insert($datos)
     {
 

@@ -41,21 +41,125 @@ class ProductosController extends Controller
     public function listar()
     {
         if (Session::userIsLoggedIn()) {
-            $productos = new Producto();
-            $productos = $productos->getAll();
+            if (! $_POST) {
 
-            foreach ($productos as $producto) {
-                $categoria[] = Categoria::getCategoria($producto->categoria_id);
+                $productos = new Producto();
+                $productos = $productos->getAll();
+
+                foreach ($productos as $producto) {
+                    $categoria[] = Categoria::buscar('id', $producto->categoria_id);
+                }
+
+                $this->view->addData(['titulo' => 'Listado Productos']);
+                echo $this->view->render('productos/listar', [
+                    'productos' => $productos,
+                    'titulo' => $this->titulo,
+                    'categorias' => $categoria
+                ]);
+
+            } elseif ($_POST) {
+
+                if ($_POST['parametro'] == 'nombre') {
+
+                    $busqueda = Producto::buscar($_POST['parametro'], $_POST['buscar']);
+
+                    foreach ($busqueda as $busquedas) {
+                        $categoria[] = Categoria::buscar('id', $busquedas->categoria_id);
+                    }
+
+                    if ($busqueda) {
+
+                        $this->view->addData(['titulo' => 'Listado Productos']);
+                        echo $this->view->render('productos/listar', ['productos' => $busqueda,
+                            'categorias' => $categoria
+                        ]);
+                    } else {
+
+                        $productos = new Producto();
+                        $productos = $productos->getAll();
+
+                        foreach ($productos as $producto) {
+                            $categoria[] = Categoria::buscar('id', $producto->categoria_id);
+                        }
+
+                        $this->view->addData(['titulo' => 'Listado Productos']);
+                        echo $this->view->render('productos/listar', [
+                            'productos' => $productos,
+                            'errores' => 'No se ha encontrado nada en la base de datos',
+                            'categorias' => $categoria
+                        ]);
+                    }
+
+                } else if ($_POST['parametro'] == 'marca') {
+
+                    $busqueda = Producto::buscar($_POST['parametro'], $_POST['buscar']);
+
+                    foreach ($busqueda as $busquedas) {
+                        $categoria[] = Categoria::buscar('id', $busquedas->categoria_id);
+                    }
+
+                    if ($busqueda) {
+
+                        $this->view->addData(['titulo' => 'Listado Productos']);
+                        echo $this->view->render('productos/listar', ['productos' => $busqueda,
+                            'categorias' => $categoria
+                        ]);
+                    } else {
+
+                        $productos = new Producto();
+                        $productos = $productos->getAll();
+
+                        foreach ($productos as $producto) {
+                            $categoria[] = Categoria::buscar('id', $producto->categoria_id);
+                        }
+
+                        $this->view->addData(['titulo' => 'Listado Productos']);
+                        echo $this->view->render('productos/listar', [
+                            'productos' => $productos,
+                            'errores' => 'No se ha encontrado nada en la base de datos',
+                            'categorias' => $categoria
+                        ]);
+
+                    }
+
+                } elseif ($_POST['parametro'] == 'categoria') {
+
+                    $busqueda = Categoria::buscar('nombre', $_POST['buscar']);
+
+                    if ($busqueda) {
+
+                        $busqueda = Producto::buscar('categoria_id', $busqueda[0]->id);
+
+                        foreach ($busqueda as $busquedas) {
+                            $categoria[] = Categoria::buscar('id', $busquedas->categoria_id);
+                        }
+
+                        $this->view->addData(['titulo' => 'Listado Productos']);
+                        echo $this->view->render('productos/listar', ['productos' => $busqueda, 'categorias' => $categoria
+                        ]);
+
+                    } else {
+
+                        $productos = new Producto();
+                        $productos = $productos->getAll();
+
+                        foreach ($productos as $producto) {
+                            $categoria[] = Categoria::buscar('id', $producto->categoria_id);
+                        }
+
+                        $this->view->addData(['titulo' => 'Listado Productos']);
+                        echo $this->view->render('productos/listar', [
+                            'productos' => $productos,
+                            'errores' => 'No se ha encontrado nada en la base de datos',
+                            'categorias' => $categoria
+                        ]);
+
+                    }
+
+                }
+
             }
 
-            //var_dump($categoria);
-
-            $this->view->addData(['titulo' => 'Listado Productos']);
-            echo $this->view->render('productos/listar', [
-                'productos' => $productos,
-                'titulo' => $this->titulo,
-                'categorias' => $categoria
-            ]);
         }  else {
             header('Location: /login');
         }
@@ -204,7 +308,7 @@ class ProductosController extends Controller
 
         $producto = Producto::getId($id);
 
-        $categoria = Categoria::getCategoria($producto->categoria_id);
+        $categoria = Categoria::buscar('id', $producto->categoria_id);
         $usuario = Usuario::getUsuario($producto->usuario_id);
 
         if ($producto) {
